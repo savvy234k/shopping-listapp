@@ -121,7 +121,7 @@
   <script>
     const SUPABASE_URL = 'https://yvfuhpvqkhnruxpwllel.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2ZnVocHZxa2hucnV4cHdsbGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE3NDIxNjgsImV4cCI6MjA4NzMxODE2OH0.usbKXnUAPm810ioJIV04E2JUPKNy4yaL4dIdn38EhMM';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let items = [];
 
@@ -133,7 +133,7 @@
     input.addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
 
     async function loadItems() {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from('shopping_items')
         .select('*')
         .order('created_at', { ascending: true });
@@ -164,7 +164,7 @@
       if (!name) return;
       input.value = '';
       input.focus();
-      const { error } = await supabase
+      const { error } = await db
         .from('shopping_items')
         .insert({ name, checked: false });
       if (error) { console.error('Insert error:', error); return; }
@@ -174,7 +174,7 @@
     async function toggleItem(id) {
       const item = items.find(x => x.id === id);
       if (!item) return;
-      const { error } = await supabase
+      const { error } = await db
         .from('shopping_items')
         .update({ checked: !item.checked })
         .eq('id', id);
@@ -183,7 +183,7 @@
     }
 
     async function deleteItem(id) {
-      const { error } = await supabase
+      const { error } = await db
         .from('shopping_items')
         .delete()
         .eq('id', id);
